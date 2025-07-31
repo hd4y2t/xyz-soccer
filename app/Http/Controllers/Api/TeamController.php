@@ -54,12 +54,12 @@ class TeamController extends Controller
             $team = $this->teamService->create($data, $request->file('logo'));
 
             return response()->json([
-                'message' => 'team retrieved successfully.',
+                'message' => 'team created successfully.',
                 'data'    => $team,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Failed to retrieve teams.',
+                'message' => 'Failed to create team.',
                 'error' => $e->getMessage(),
             ], 500);
         }
