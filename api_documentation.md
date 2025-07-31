@@ -445,7 +445,7 @@ Authorization: Bearer YOUR_API_KEY
                 "away_team_id": 1,
                 "tournament_date": "2025-08-09",
                 "tournament_time": "10:10:00",
-                "status": "scheduled", // 'scheduled','completed'
+                "status": "completed", // 'scheduled','completed'
                 "created_at": "2025-07-30T10:35:46.000000Z",
                 "updated_at": "2025-07-30T10:52:34.000000Z",
                 "deleted_at": null,
@@ -541,9 +541,213 @@ Authorization: Bearer YOUR_API_KEY
                     "updated_at": "2025-07-30T10:35:07.000000Z",
                     "deleted_at": null,
                     "logo_url": "http://127.0.0.1:8000/storage/teams/team_6889f55bc2c7f.jpg"
-                },
+                }
+            }
+        ]
+    }
+    ```
+
+---
+
+### 11. Show Tournament
+
+-   **URL:** `api/tournaments/{tournamnet}`
+-   **Method:** `GET`
+-   **Description:** show detail a tournament.
+-   **Parameter:**
+    -   `tournament` (string, required) Tournament ID
+-   **Body**
+
+    -   `home_team_id` (integer, required) Team ID
+    -   `away_team_id` (integer, required) Team ID
+    -   `tournament_date` (date, required, `format_date:'Y-m-d'`)
+    -   `tournament_time` (date, required, `format_date:'H:s:i'`)
+
+-   **Response:**
+    ```json
+    {
+        "id": 1,
+        "home_team_id": 2,
+        "away_team_id": 1,
+        "tournament_date": "2025-08-09",
+        "tournament_time": "10:10:00",
+        "status": "completed", // ['scheduled' ,'completed']
+        "created_at": "2025-07-30T10:35:46.000000Z",
+        "updated_at": "2025-07-30T10:52:34.000000Z",
+        "deleted_at": null,
+        "home_team": {
+            "id": 2,
+            "name": "B",
+            "logo": "team_6889f562cb4a7.jpg",
+            "founded_year": "2000",
+            "home_address": "D",
+            "city": "C",
+            "created_at": "2025-07-30T10:35:14.000000Z",
+            "updated_at": "2025-07-30T10:35:14.000000Z",
+            "deleted_at": null,
+            "logo_url": "http://127.0.0.1:8000/storage/teams/team_6889f562cb4a7.jpg"
+        },
+        "away_team": {
+            "id": 1,
+            "name": "A",
+            "logo": "team_6889f55bc2c7f.jpg",
+            "founded_year": "2000",
+            "home_address": "D",
+            "city": "C",
+            "created_at": "2025-07-30T10:35:07.000000Z",
+            "updated_at": "2025-07-30T10:35:07.000000Z",
+            "deleted_at": null,
+            "logo_url": "http://127.0.0.1:8000/storage/teams/team_6889f55bc2c7f.jpg"
+        },
+        "result": {
+            "id": 3,
+            "tournament_id": 1,
+            "home_score": 1,
+            "away_score": 4,
+            "status": "Tim Away Menang.", // ['Tim Away Menang, Tim Home Menang, Draw]
+            "created_at": "2025-07-30T10:53:27.000000Z",
+            "updated_at": "2025-07-30T10:53:27.000000Z",
+            "deleted_at": null
+        },
+        "goals": [
+            {
+                "id": 41,
+                "tournament_id": 1,
+                "player_id": 1,
+                "goal_time": "10:12:00",
+                "created_at": "2025-07-30T10:53:27.000000Z",
+                "updated_at": "2025-07-30T10:53:27.000000Z",
+                "deleted_at": null,
+                "player": {
+                    // player
+                    "id": 1,
+                    "team_id": 1,
+                    "name": "GHwaw",
+                    "height": 180,
+                    "weight": 78,
+                    "position": "penyerang",
+                    "shirt_number": 20,
+                    "created_at": "2025-07-30T10:35:21.000000Z",
+                    "updated_at": "2025-07-30T10:35:21.000000Z",
+                    "deleted_at": null,
+                    "team": {
+                        // from team
+                        "id": 1,
+                        "name": "A",
+                        "logo": "team_6889f55bc2c7f.jpg",
+                        "founded_year": "2000",
+                        "home_address": "D",
+                        "city": "C",
+                        "created_at": "2025-07-30T10:35:07.000000Z",
+                        "updated_at": "2025-07-30T10:35:07.000000Z",
+                        "deleted_at": null,
+                        "logo_url": "http://127.0.0.1:8000/storage/teams/team_6889f55bc2c7f.jpg"
+                    }
+                }
+            }
+        ]
+    }
+    ```
+
+---
+
+### 12. Delete Tournamnet
+
+-   **URL:** `api/tournaments/{tournament}`
+-   **Method:** `DELETE`
+-   **Description:** Delete Tournament.
+-   **Parameter:**
+    -   `tournament` (string, required) Team ID
+-   **Response:**
+
+    ```json
+    {
+        "message": "tournament deleted successfully."
+    }
+    ```
+
+-   **Response if tournament status completed**
+
+    ```json
+    {
+        "message": "Failed to delete tournament.",
+        "error": "Cannot delete a tournament that has already been played."
+    }
+    ```
+
+---
+
+### 13. Result Tournamnet
+
+-   **URL:** `api/tournaments/{tournament}/result`
+-   **Method:** `POST`
+-   **Description:** create result a Tournament.
+-   **Parameter:**
+    -   `tournament` (string, required) Team ID
+-   **Body**
+
+    -   `goals` (array, required)
+    -   `goals.*.player_id` (integer, required) Player ID
+    -   `goals.*.goal_time` (date, `format_date: 's:i'`, required)
+
+-   **Example body**
+
+    ```json
+    {
+        "goals": [
+            {
+                "player_id": 1,
+                "goal_time": "10:12"
+            },
+            {
+                "player_id": 2,
+                "goal_time": "20:00"
+            }
+        ]
+    }
+    ```
+
+-   **Response:**
+
+    ```json
+    {
+        "message": "Tournament result successfully recorded.",
+        "data": {
+            "status": "Tim Away Menang.",
+            "home_score": 1,
+            "away_score": 4
+        }
+    }
+    ```
+
+---
+
+### 14. Report Tournamnet
+
+-   **URL:** `api/tournaments/{tournament}/report`
+-   **Method:** `GET`
+-   **Description:** Report from Tournament.
+-   **Parameter:**
+
+    -   `tournament` (string, required) Team ID
+
+-   **Response:**
+
+    ```json
+    {
+        "message": "Laporan hasil pertandingan berhasil diambil.",
+        "data": {
+            "tournament": {
+                "id": 1,
+                "home_team_id": 2,
+                "away_team_id": 1,
+                "tournament_date": "2025-08-09",
+                "tournament_time": "10:10:00",
+                "status": "completed",
+                "created_at": "2025-07-30T10:35:46.000000Z",
+                "updated_at": "2025-07-30T10:52:34.000000Z",
+                "deleted_at": null,
                 "result": {
-                    // hasil result tournament
                     "id": 3,
                     "tournament_id": 1,
                     "home_score": 1,
@@ -553,28 +757,17 @@ Authorization: Bearer YOUR_API_KEY
                     "updated_at": "2025-07-30T10:53:27.000000Z",
                     "deleted_at": null
                 }
+            },
+            "skor_akhir": "1 - 4",
+            "status_pertandingan": "Tim Away Menang.",
+            "top_scorer": {
+                "nama": "A",
+                "jumlah_gol": 4
+            },
+            "akumulasi_kemenangan": {
+                "tim_home": 1,
+                "tim_away": 4
             }
-        ]
+        }
     }
     ```
-
----
-
----
-
-## Error Responses
-
--   **401 Unauthorized**
-    ```json
-    { "error": "Invalid API key." }
-    ```
--   **404 Not Found**
-    ```json
-    { "error": "Resource not found." }
-    ```
-
----
-
-## Contact
-
-For support, email: `support@xyz-soccer.com`

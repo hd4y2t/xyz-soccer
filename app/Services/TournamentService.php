@@ -2,11 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Team;
 use App\Models\Tournament;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\App;
 
 class TournamentService
 {
@@ -34,7 +31,7 @@ class TournamentService
             throw new \InvalidArgumentException('A tournament already exists at this date and time.');
         }
 
-        // // cek team tersebut sudah memiliki player
+        // // cek team tersebut wajib memiliki minimal 11 pemain
         // $homeTeam = App::TeamService()->findById($data['home_team_id']);
         // $awayTeam = App::TeamService()->findById($data['away_team_id']);
 
@@ -71,8 +68,10 @@ class TournamentService
             throw new \InvalidArgumentException('Home team and away team cannot be the same.');
         }
 
-        if ($tournament->tournament_date === now()->format('Y-m-d') &&
-            $tournament->tournament_time === now()->format('H:i')) {
+        if (
+            $tournament->tournament_date === now()->format('Y-m-d') &&
+            $tournament->tournament_time === now()->format('H:i')
+        ) {
             throw new \InvalidArgumentException('Cannot update a tournament that is currently ongoing.');
         }
 
@@ -94,13 +93,15 @@ class TournamentService
 
     public function delete(Tournament $tournament): void
     {
-        if ($tournament->tournament_date === now()->format('Y-m-d') &&
-            $tournament->tournament_time === now()->format('H:i')) {
+        if (
+            $tournament->tournament_date === now()->format('Y-m-d') &&
+            $tournament->tournament_time === now()->format('H:i')
+        ) {
             throw new \InvalidArgumentException('Cannot delete a tournament that is currently ongoing.');
         }
 
         if ($tournament->result) {
-            throw new \InvalidArgumentException('Cannot delete a tournament that has already been played.');
+            throw new \InvalidArgumentException('Cannot delete a tournament that has already been completed.');
         }
 
         $tournament->delete();

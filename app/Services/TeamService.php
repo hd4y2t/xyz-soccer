@@ -42,8 +42,8 @@ class TeamService
                 Storage::disk('public')->delete('teams/' . $team->logo);
             }
 
-            $filename = uniqid('team_') . '.' . $data['logo']->getClientOriginalExtension();
-            $data['logo']->storeAs('teams', $filename, 'public');
+            $filename = uniqid('team_') . '.' . $logo->getClientOriginalExtension();
+            $logo->store('teams', 'public');
             $data['logo'] = $filename;
         } else {
             unset($data['logo']);

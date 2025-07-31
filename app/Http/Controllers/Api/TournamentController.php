@@ -53,7 +53,10 @@ class TournamentController extends Controller
 
             return response()->json([
                 'message' => 'tournament created successfully.',
-                'data'    => $tournament,
+                'data'    => $tournament->loadMissing([
+                    'homeTeam',
+                    'awayTeam',
+                ]),
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
@@ -72,10 +75,12 @@ class TournamentController extends Controller
             return response()->json([
                 'message' => 'Tournament retrieved successfully.',
                 'data' => $tournament
-                ->loadMissing([
-                    'result',
-                    'goals.player'
-                ]),
+                    ->loadMissing([
+                        'homeTeam',
+                        'awayTeam',
+                        'result',
+                        'goals.player.team',
+                    ]),
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
